@@ -1,0 +1,13 @@
+# VS Code
+.vscode/
+
+# Java compiled files
+bin/
+*.class
+
+# Maven
+target/
+
+# OS files
+.DS_Store
+Thumbs.db
