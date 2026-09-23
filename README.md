@@ -1,18 +1,25 @@
-## Getting Started
+# KZP
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Лабораторні роботи з дисципліни «Кросплатформні засоби програмування».
 
-## Folder Structure
+## Організація репозиторію
 
-The workspace contains two folders by default, where:
+Обрано **варіант 1 — один Public-репозиторій і мовні гілки**.
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+Java- та Python-роботи зберігатимуться в одному репозиторії.
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+### Гілки
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+- `main` — основна захищена гілка.
+- `java/infra` — поточна інфраструктурна гілка для Java.
+- `python/infra` — поточна інфраструктурна гілка для Python.
 
-## Dependency Management
+Зміни до `main` вносяться через Pull Request.
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## Java
+
+Лабораторні роботи з Java.
+
+## Python
+
+Лабораторні роботи з Python.
