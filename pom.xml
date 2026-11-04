@@ -25,6 +25,13 @@
     </dependencies>
 
     <build>
+    <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+        </resource>
+    </resources>
+    
         <plugins>
             <!-- 1. Maven Surefire Plugin (для запуску JUnit 5 тестів) -->
             <plugin>
