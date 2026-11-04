@@ -17,13 +17,14 @@ public final class AppVersion {
      * @return версія проєкту або значення за замовчуванням
      */
     public static String getVersion() {
-        try (InputStream input = AppVersion.class.getClassLoader()
-                .getResourceAsStream("app.properties")) {
-            if (input == null) {
-                return "1.0-SNAPSHOT";
-            }
+        InputStream input = AppVersion.class.getClassLoader().getResourceAsStream("app.properties");
+        if (input == null) {
+            return "1.0-SNAPSHOT";
+        }
+
+        try (InputStream is = input) {
             Properties prop = new Properties();
-            prop.load(input);
+            prop.load(is);
             return prop.getProperty("version", "1.0-SNAPSHOT");
         } catch (Exception e) {
             return "1.0-SNAPSHOT";
