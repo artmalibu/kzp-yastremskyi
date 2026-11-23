@@ -10,7 +10,7 @@ class RouteTest {
 
     @Test
     void testValidRouteCreation() {
-        Route route = new Route("Чорногора", 55.5, 2050, 4, 3);
+        Route route = new HikingRoute("Чорногора", 55.5, 2050, 4, 3);
         assertEquals("Чорногора", route.getName());
         assertEquals(55.5, route.getLengthKm());
         assertEquals(2050, route.getElevationM());
@@ -27,11 +27,11 @@ class RouteTest {
 
     @Test
     void testConstructorInvariants() {
-        assertThrows(IllegalArgumentException.class, () -> new Route("", 10.0, 100, 2, 1));
-        assertThrows(IllegalArgumentException.class, () -> new Route("Тест", -5.0, 100, 2, 1));
-        assertThrows(IllegalArgumentException.class, () -> new Route("Тест", 10.0, -10, 2, 1));
-        assertThrows(IllegalArgumentException.class, () -> new Route("Тест", 10.0, 100, 6, 1));
-        assertThrows(IllegalArgumentException.class, () -> new Route("Тест", 10.0, 100, 2, 0));
+        assertThrows(IllegalArgumentException.class, () -> new HikingRoute("", 10.0, 100, 2, 1));
+        assertThrows(IllegalArgumentException.class, () -> new HikingRoute("Тест", -5.0, 100, 2, 1));
+        assertThrows(IllegalArgumentException.class, () -> new HikingRoute("Тест", 10.0, -10, 2, 1));
+        assertThrows(IllegalArgumentException.class, () -> new HikingRoute("Тест", 10.0, 100, 6, 1));
+        assertThrows(IllegalArgumentException.class, () -> new HikingRoute("Тест", 10.0, 100, 2, 0));
     }
 
     @Test
@@ -41,7 +41,7 @@ class RouteTest {
 
     @Test
     void testToStringFormatting() {
-        Route route = new Route("Спиці", 18.2, 950, 2, 1);
+        Route route = new HikingRoute("Спиці", 18.2, 950, 2, 1);
         String text = route.toString();
         assertTrue(text.contains("18.20 км"));
         assertTrue(text.contains("950 м висоти"));
