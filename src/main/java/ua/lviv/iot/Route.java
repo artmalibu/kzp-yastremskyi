@@ -4,26 +4,28 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * Клас-сутність, що описує незмінний туристичний маршрут (Варіант 26).
+ * Абстрактний базовий клас туристичного маршруту (Варіант 26).
  */
-public final class Route {
+public abstract class Route {
 
     private final String name;
     private final double lengthKm;
     private final int elevationM;
     private final int difficulty;
     private final int days;
+    private final RouteKind kind;
 
     /**
-     * Конструктор із перевіркою інваріантів об'єкта.
+     * Конструктор базового маршруту із перевіркою інваріантів.
      *
      * @param name       назва маршруту
      * @param lengthKm   довжина в км (> 0)
      * @param elevationM набір висоти в м (>= 0)
      * @param difficulty складність (1..5)
      * @param days       тривалість у днях (> 0)
+     * @param kind       вид маршруту
      */
-    public Route(String name, double lengthKm, int elevationM, int difficulty, int days) {
+    protected Route(String name, double lengthKm, int elevationM, int difficulty, int days, RouteKind kind) {
         this.name = Objects.requireNonNull(name, "Назва не може бути null");
         if (name.isBlank()) {
             throw new IllegalArgumentException("Назва не може бути порожньою");
@@ -41,6 +43,7 @@ public final class Route {
             throw new IllegalArgumentException("Тривалість має бути додатним числом");
         }
 
+        this.kind = Objects.requireNonNull(kind, "Вид маршруту не може бути null");
         this.lengthKm = lengthKm;
         this.elevationM = elevationM;
         this.difficulty = difficulty;
@@ -48,15 +51,23 @@ public final class Route {
     }
 
     /**
-     * Статичний фабричний метод створення сутності з CSV-рядка.
+     * Поліморфний метод розрахунку інтегрального показника складності маршруту.
      *
-     * @param line рядок формату "назва;довжина;висота;складність;дні"
-     * @return об'єкт Route
+     * @return числовий індекс складності маршруту
+     */
+    public abstract double calculateComplexityScore();
+
+    /**
+     * Статичний фабричний метод створення відповідного підтипу маршруту з CSV-рядка.
+     * Підтримує базовий 5-колонковий формат та розширений 6-колонковий формат із типом маршруту.
+     *
+     * @param line рядок формату "назва;довжина;висота;складність;дні[;вид]"
+     * @return екземпляр підкласу Route (HikingRoute або CyclingRoute)
      */
     public static Route fromCsv(String line) {
         Objects.requireNonNull(line, "Рядок не може бути null");
         String[] fields = line.split(";", -1);
-        if (fields.length != 5) {
+        if (fields.length != 5 && fields.length != 6) {
             throw new IllegalArgumentException("Некоректна кількість полів у рядку");
         }
 
@@ -67,7 +78,14 @@ public final class Route {
             int difficulty = Integer.parseInt(fields[3].trim());
             int days = Integer.parseInt(fields[4].trim());
 
-            return new Route(name, lengthKm, elevationM, difficulty, days);
+            RouteKind kind = (fields.length == 6)
+                    ? RouteKind.fromString(fields[5])
+                    : RouteKind.HIKING;
+
+            return switch (kind) {
+                case HIKING -> new HikingRoute(name, lengthKm, elevationM, difficulty, days, difficulty >= 4);
+                case CYCLING -> new CyclingRoute(name, lengthKm, elevationM, difficulty, days, elevationM < 1000);
+            };
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Помилка формату числового поля", e);
         }
@@ -93,10 +111,31 @@ public final class Route {
         return days;
     }
 
+    public RouteKind getKind() {
+        return kind;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Route route = (Route) o;
+        return Objects.equals(name, route.name) && kind == route.kind;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getClass(), name, kind);
+    }
+
     @Override
     public String toString() {
         return String.format(Locale.ROOT,
-                "%s: %.2f км, %d м висоти, складність %d/5, %d днів",
-                name, lengthKm, elevationM, difficulty, days);
+                "%s (%s): %.2f км, %d м висоти, складність %d/5 (індекс %.2f), %d днів",
+                name, kind.getTitle(), lengthKm, elevationM, difficulty, calculateComplexityScore(), days);
     }
 }
