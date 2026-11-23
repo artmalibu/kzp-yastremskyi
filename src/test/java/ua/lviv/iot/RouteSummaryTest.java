@@ -32,9 +32,9 @@ class RouteSummaryTest {
     @Test
     void shouldCalculateSummaryFromRoutesList() {
         List<Route> routes = List.of(
-                new Route("Чорногірський хребет", 55.5, 2050, 4, 3),
-                new Route("Мармароси", 42.0, 1600, 3, 2),
-                new Route("Спиці та Ребра", 18.2, 950, 2, 1)
+                new HikingRoute("Чорногірський хребет", 55.5, 2050, 4, 3),
+                new HikingRoute("Мармароси", 42.0, 1600, 3, 2),
+                new HikingRoute("Спиці та Ребра", 18.2, 950, 2, 1)
         );
 
         RouteSummary summary = RouteSummary.fromRoutes(routes);
