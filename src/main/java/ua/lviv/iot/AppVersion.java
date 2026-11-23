@@ -1,12 +1,16 @@
 package ua.lviv.iot;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.io.InputStreamReader;
 import java.util.Properties;
 
 /**
  * Клас для автоматичного зчитування версії програми з pom.xml.
  */
 public final class AppVersion {
+
+    private static final String DEFAULT_VERSION = "1.3.0";
 
     private AppVersion() {
     }
@@ -19,15 +23,15 @@ public final class AppVersion {
     public static String getVersion() {
         InputStream input = AppVersion.class.getClassLoader().getResourceAsStream("app.properties");
         if (input == null) {
-            return "1.0-SNAPSHOT";
+            return DEFAULT_VERSION;
         }
 
-        try (InputStream is = input) {
+        try (InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
             Properties prop = new Properties();
-            prop.load(is);
-            return prop.getProperty("version", "1.0-SNAPSHOT");
+            prop.load(reader);
+            return prop.getProperty("version", DEFAULT_VERSION);
         } catch (Exception e) {
-            return "1.0-SNAPSHOT";
+            return DEFAULT_VERSION;
         }
     }
 }
