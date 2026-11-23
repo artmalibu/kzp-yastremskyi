@@ -4,9 +4,9 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * Абстрактний базовий клас туристичного маршруту (Варіант 26).
+ * Абстрактний запечатаний базовий клас туристичного маршруту (Варіант 26).
  */
-public abstract class Route {
+public abstract sealed class Route permits HikingRoute, CyclingRoute {
 
     private final String name;
     private final double lengthKm;
@@ -26,7 +26,30 @@ public abstract class Route {
      * @param kind       вид маршруту
      */
     protected Route(String name, double lengthKm, int elevationM, int difficulty, int days, RouteKind kind) {
-        this.name = Objects.requireNonNull(name, "Назва не може бути null");
+        this(validate(name, lengthKm, elevationM, difficulty, days, kind));
+    }
+
+    private Route(ValidatedArgs valid) {
+        this.name = valid.name;
+        this.lengthKm = valid.lengthKm;
+        this.elevationM = valid.elevationM;
+        this.difficulty = valid.difficulty;
+        this.days = valid.days;
+        this.kind = valid.kind;
+    }
+
+    private record ValidatedArgs(
+            String name,
+            double lengthKm,
+            int elevationM,
+            int difficulty,
+            int days,
+            RouteKind kind) {
+    }
+
+    private static ValidatedArgs validate(
+            String name, double lengthKm, int elevationM, int difficulty, int days, RouteKind kind) {
+        Objects.requireNonNull(name, "Назва не може бути null");
         if (name.isBlank()) {
             throw new IllegalArgumentException("Назва не може бути порожньою");
         }
@@ -42,12 +65,8 @@ public abstract class Route {
         if (days <= 0) {
             throw new IllegalArgumentException("Тривалість має бути додатним числом");
         }
-
-        this.kind = Objects.requireNonNull(kind, "Вид маршруту не може бути null");
-        this.lengthKm = lengthKm;
-        this.elevationM = elevationM;
-        this.difficulty = difficulty;
-        this.days = days;
+        Objects.requireNonNull(kind, "Вид маршруту не може бути null");
+        return new ValidatedArgs(name, lengthKm, elevationM, difficulty, days, kind);
     }
 
     /**
